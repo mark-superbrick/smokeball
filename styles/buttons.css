@@ -7,6 +7,7 @@
   z-index: 1;
   overflow: hidden;
 }
+.button:before,
 [data-wf--button-main--style="primary"]:before {
   content: '';
   position: absolute;
@@ -14,11 +15,17 @@
   z-index: -1;
   background: var(--base-color--secondary-gradient);
   opacity: 0;
-  transition: opacity 0.4s linear;
+  transition: opacity 0.35s;
 }
+
+/* .button:hover,
+[data-wf--button-main--style="primary"]:hover {
+  color: var(--base-color--dark-grey);
+}
+.button:hover:before,
 [data-wf--button-main--style="primary"]:hover:before {
   opacity: 1;
-}
+} */
 
 
 .button.is-outline,
@@ -55,3 +62,9 @@
 /* .section-color-dark .button_wrap:not(:hover) .icon-logo path[fill="url(#primary-gradient)"] {
   filter: invert(0%);
 } */
+
+
+.button_wrap:has([data-wf--button-size--variant="link"]):hover {
+  background-color: transparent;
+  color: var(--base-color--ember);
+}
