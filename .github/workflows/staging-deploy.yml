@@ -1,0 +1,29 @@
+name: Purge jsDelivr (staging)
+
+on:
+  push:
+    branches: [staging]
+    paths:
+      - 'scripts/**/*.js'
+      - 'styles/**/*.css'
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Purge changed files on @staging
+        run: |
+          CHANGED=$(git diff --name-only HEAD^ HEAD -- 'scripts/**/*.js' 'styles/**/*.css')
+          if [ -z "$CHANGED" ]; then
+            echo "No matching files changed."
+            exit 0
+          fi
+          for f in $CHANGED; do
+            URL="https://purge.jsdelivr.net/gh/${{ github.repository }}@staging/$f"
+            echo "Purging $URL"
+            curl -fsS "$URL" || echo "WARN: purge failed for $f"
+          done
