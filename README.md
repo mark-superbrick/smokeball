@@ -28,7 +28,13 @@ Prod CSS:    https://cdn.jsdelivr.net/gh/mark-superbrick/smokeball@main/styles/<
 
 ```bash
 npm install      # first time only
-npm run dev      # browser-sync on localhost:3003, watches scripts/**/*.js + styles/**/*.css
+npm run dev      # browser-sync on localhost:3003 (loopback only), watches scripts/**/*.js + styles/**/*.css
+```
+
+The server binds to `127.0.0.1` by default so it isn't exposed to the LAN. For on-device testing over the network:
+
+```bash
+DEV_SHARE=1 npm run dev   # binds 0.0.0.0 so phones/tablets on the same network can reach it
 ```
 
 **Requestly redirect rule** (set once per asset):
