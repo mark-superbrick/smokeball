@@ -37,23 +37,34 @@ The server binds to `127.0.0.1` by default so it isn't exposed to the LAN. For o
 DEV_SHARE=1 npm run dev   # binds 0.0.0.0 so phones/tablets on the same network can reach it
 ```
 
-**Requestly redirect rule** (set once per asset):
+**Requestly redirect rule** (one wildcard rule covers every script and style):
 
 | Field | Value |
 |---|---|
-| Source — Contains | `cdn.jsdelivr.net/gh/mark-superbrick/smokeball` |
-| Redirect To | `http://localhost:3003/scripts/<name>/index.js` |
+| Source — Type | Wildcard |
+| Source — URL | `https://cdn.jsdelivr.net/gh/mark-superbrick/smokeball@staging/*` |
+| Redirect To | `http://localhost:3003/$1` |
+
+The `*` captures the asset path (`scripts/<name>/index.js`, `styles/<name>.css`, etc.) into `$1`, and browser-sync serves the repo root, so it resolves locally. One rule, no per-asset setup.
 
 Enable the rule → open the `.webflow.io` staging site → edit the file → browser auto-reloads. Disable to revert to the CDN.
 
 ## Adding a New Script
 
 1. Create `scripts/<name>/index.js` (and/or `styles/<name>.css`).
-2. Add the loader to Webflow custom code (see Dynamic Loading below).
+2. Add a static `<script src=...@staging...>` (and `<link ...@staging...>`) tag to Webflow staging custom code for preview.
 3. Add a Requestly redirect rule for local dev.
 4. Push to `staging` to test → open a PR `staging → main` and merge to ship.
 
+## Production
+
+Production does **not** use the CDN, Requestly, or the dynamic loader. Once a script/style is final, its contents are pasted directly into Webflow **custom embed components** on the page. The jsDelivr `@staging` pipeline exists only for local dev and staging preview.
+
+So the lifecycle is: edit locally (Requestly → localhost) → push `staging` and preview on `.webflow.io` via the `@staging` CDN tag → when approved, copy the final code from the repo into the production custom embed.
+
 ## Dynamic Loading Snippet
+
+> Optional / not used in this project — production embeds code directly (see above). Kept here as a reference for CDN-on-production setups.
 
 Drop this in Webflow custom code. On `.webflow.io` it loads `@staging`; on the production domain it loads `@main`.
 
@@ -79,7 +90,7 @@ Drop this in Webflow custom code. On `.webflow.io` it loads `@staging`; on the p
 ## Workflows
 
 - **Staging:** `git push origin staging` → `staging-deploy.yml` purges the `@staging` jsDelivr cache for changed files. Live in ~30s on the `.webflow.io` domain.
-- **Production:** PR `staging → main`, merge → `production-deploy.yml` purges `@main`. No Webflow publish required for script-only changes.
+- **Production:** PR `staging → main`, merge → `production-deploy.yml` purges `@main` (keeps `@main` as the canonical final copy). To go live, paste the final code from the repo into the page's Webflow custom embed component and publish — production does not pull from the CDN.
 
 ## jsDelivr Cache Notes
 
