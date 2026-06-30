@@ -1,0 +1,24 @@
+/* CSS Keyframe Animation */
+@keyframes translateX {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+[data-css-marquee] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+[data-css-marquee-list] {
+  flex: none;
+  width: max-content;
+  animation: translateX 30s linear;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+
+[data-css-marquee-list][data-marquee-direction="right"] {
+  animation-direction: reverse;
+}
