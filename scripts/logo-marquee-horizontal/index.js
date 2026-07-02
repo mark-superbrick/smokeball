@@ -23,13 +23,30 @@ function initCSSMarquee() {
   }, { threshold: 0 });
   
   // Calculate the width and set the animation duration accordingly
+  const applyDurations = () => {
+    marquees.forEach(marquee => {
+      marquee.querySelectorAll('[data-css-marquee-list]').forEach(list => {
+        const speed = parseFloat(list.dataset.marqueeSpeed) || pixelsPerSecond;
+        list.style.animationDuration = (list.offsetWidth / 2 / speed) + 's';
+      });
+    });
+  };
+
   marquees.forEach(marquee => {
     marquee.querySelectorAll('[data-css-marquee-list]').forEach(list => {
-      const speed = parseFloat(list.dataset.marqueeSpeed) || pixelsPerSecond;
-      list.style.animationDuration = (list.offsetWidth / 2 / speed) + 's';
       list.style.animationPlayState = 'paused';
     });
     observer.observe(marquee);
+  });
+  applyDurations();
+
+  let lastWidth = window.innerWidth;
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === lastWidth) return;
+    lastWidth = window.innerWidth;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(applyDurations, 250);
   });
 }
 

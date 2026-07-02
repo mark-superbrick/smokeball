@@ -5,6 +5,8 @@ function initLogoVerticalScroll() {
     const verticalScrolls = document.querySelectorAll('[data-logo-vertical-scroll-wrap]');
     if(!verticalScrolls.length) return;
 
+    const marqueeRefreshers = [];
+
     verticalScrolls.forEach((verticalScroll, index) => {
         if (verticalScroll.dataset.logoVerticalScrollInit === 'true') return;
         verticalScroll.dataset.logoVerticalScrollInit = 'true';
@@ -32,6 +34,8 @@ function initLogoVerticalScroll() {
         if (marquee) {
             const startMarquee = (column, originalCount, goingUp) => {
                 if (!column || column.children.length <= originalCount) return;
+                gsap.killTweensOf(column);
+                gsap.set(column, { y: 0 });
                 const loopDistance = column.children[originalCount].offsetTop - column.children[0].offsetTop;
                 if (loopDistance <= 0) return;
                 gsap.fromTo(
@@ -40,8 +44,12 @@ function initLogoVerticalScroll() {
                     { y: goingUp ? -loopDistance : 0, duration: loopDistance / 50, ease: 'none', repeat: -1 }
                 );
             };
-            startMarquee(leftColumn, leftOriginalCount, true);
-            startMarquee(rightColumn, rightOriginalCount, false);
+            const runMarquee = () => {
+                startMarquee(leftColumn, leftOriginalCount, true);
+                startMarquee(rightColumn, rightOriginalCount, false);
+            };
+            runMarquee();
+            marqueeRefreshers.push(runMarquee);
             return;
         }
 
@@ -70,6 +78,19 @@ function initLogoVerticalScroll() {
             0
         );
     });
+
+    if (marqueeRefreshers.length) {
+        let lastWidth = window.innerWidth;
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            if (window.innerWidth === lastWidth) return;
+            lastWidth = window.innerWidth;
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                marqueeRefreshers.forEach((refresh) => refresh());
+            }, 250);
+        });
+    }
 }
 
 // Initialize CSS Marquee
