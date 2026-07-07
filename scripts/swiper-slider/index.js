@@ -8,8 +8,15 @@ function initSwiperSlider() {
     
     const prevButton = swiperGroup.querySelector("[data-swiper-prev]");
     const nextButton = swiperGroup.querySelector("[data-swiper-next]");
-    
+
+    const dsWrapper = 'smokeball-design-system--swiper-wrapper';
+    const dsSlide = 'smokeball-design-system--swiper-slide';
+    const wrapperClass = swiperSliderWrap.querySelector('.' + dsWrapper) ? dsWrapper : 'swiper-wrapper';
+    const slideClass = swiperSliderWrap.querySelector('.' + dsSlide) ? dsSlide : 'swiper-slide';
+
     const swiper = new Swiper(swiperSliderWrap, {
+      wrapperClass,
+      slideClass,
       slidesPerView: 1,
       speed: 600,
       // mousewheel: true,
