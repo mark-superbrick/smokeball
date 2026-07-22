@@ -1,23 +1,55 @@
 function initOnScroll() {
-  document.querySelectorAll('[data-on-scroll]').forEach((el) => {
-    if (el.hasAttribute('data-on-scroll-initialized')) return;
-    el.setAttribute('data-on-scroll-initialized', '');
+  gsap.registerPlugin(ScrollTrigger);
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const eventName = el.getAttribute('data-on-scroll');
-          const eventDetail = { element: el };
-          const customEvent = new CustomEvent(eventName, { detail: eventDetail });
-          el.dispatchEvent(customEvent);
-        }
-      });
-    });
-    observer.observe(el);
+  document.querySelectorAll('[data-on-scroll="reveal"]').forEach((el) => {
+    if (el.dataset.onScrollInit === 'true') return;
+    el.dataset.onScrollInit = 'true';
+
+    gsap.fromTo(
+      el,
+      { opacity: 0, y: '4rem' },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        delay: 0,
+        ease: 'power1.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  });
+
+  document.querySelectorAll('[data-on-scroll="stagger-reveal"]').forEach((el) => {
+    if (el.dataset.onScrollInit === 'true') return;
+    el.dataset.onScrollInit = 'true';
+
+    const children = el.children;
+    if (!children.length) return;
+
+    gsap.fromTo(
+      children,
+      { opacity: 0, y: '4rem' },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        delay: 0,
+        ease: 'power1.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
   });
 }
 
-// Initialize Enter on Scroll functionality when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
   initOnScroll();
 });
