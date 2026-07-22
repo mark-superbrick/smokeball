@@ -8,13 +8,14 @@ Replace the current `scripts/on-scroll/index.js` (IntersectionObserver + CustomE
 
 - **List wrapper:** `[data-on-scroll-list]` — the ScrollTrigger trigger element.
 - **Reveal targets:** `[data-on-scroll="content-reveal"]` — descendants of the list (any depth) that animate in.
+- **Fallback targets:** if a list has no `[data-on-scroll="content-reveal"]` descendants, use its **direct children** (`list.children`) as the reveal targets and run the same content-reveal animation on them. A list is only skipped when it has no direct children at all.
 
 ## Behavior
 
 - `gsap.registerPlugin(ScrollTrigger)` once at the top of `initOnScroll` (matches the `logo-marquee-vertical` convention; `gsap` and `ScrollTrigger` are globals provided by the Webflow site, not npm).
 - For each `[data-on-scroll-list]`:
   - Idempotent init guard via `dataset.onScrollListInit === 'true'` (mirrors `logo-marquee-vertical`).
-  - Query its `[data-on-scroll="content-reveal"]` descendants. If none, skip.
+  - Query its `[data-on-scroll="content-reveal"]` descendants. If none found, fall back to its direct children (`list.children`). If there are still no elements, skip.
   - Run one tween:
     ```js
     gsap.fromTo(
@@ -44,7 +45,7 @@ Replace the current `scripts/on-scroll/index.js` (IntersectionObserver + CustomE
 | Property | Value |
 |---|---|
 | Animation name | `content-reveal` (matched via `data-on-scroll` value) |
-| Selector | `[data-on-scroll="content-reveal"]` |
+| Selector | `[data-on-scroll="content-reveal"]`, falling back to `list.children` |
 | Delay | `0` |
 | Duration | `0.7s` |
 | Ease | `power1.out` |
@@ -56,7 +57,7 @@ Replace the current `scripts/on-scroll/index.js` (IntersectionObserver + CustomE
 
 ## Error Handling
 
-Guard-clause style only, matching the codebase: skip lists whose init guard is already set, and skip lists with zero matching children. No further handling.
+Guard-clause style only, matching the codebase: skip lists whose init guard is already set, and skip lists with no direct children (after the content-reveal → direct-children fallback yields nothing). No further handling.
 
 ## Testing
 
