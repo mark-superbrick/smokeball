@@ -1,13 +1,15 @@
 
-function initSwiperSlider() {  
-  const swiperSliderGroups = document.querySelectorAll("[data-swiper-group]");
+function initTestimonialSlider() {  
+  const swiperSliderGroups = document.querySelectorAll("[data-swiper-group='testimonial-slider']");
   
   swiperSliderGroups.forEach((swiperGroup) => {
-    const swiperSliderWrap = swiperGroup.querySelector("[data-swiper-wrap]");
+    const swiperSliderWrap = swiperGroup.querySelector("[data-swiper-wrap='testimonial-slider']");
     if(!swiperSliderWrap) return;
-    
-    const prevButton = swiperGroup.querySelector("[data-swiper-prev]");
-    const nextButton = swiperGroup.querySelector("[data-swiper-next]");
+    if (swiperGroup.hasAttribute('data-swiper-initialized')) return;
+    swiperGroup.setAttribute('data-swiper-initialized', '');
+
+    const prevButton = swiperGroup.querySelector("[data-swiper-prev='testimonial-slider']");
+    const nextButton = swiperGroup.querySelector("[data-swiper-next='testimonial-slider']");
 
     const dsWrapper = 'smokeball-design-system--swiper-wrapper';
     const dsSlide = 'smokeball-design-system--swiper-slide';
@@ -51,5 +53,5 @@ function initSwiperSlider() {
 
 // Initialize Swiper Slider Setup
 document.addEventListener('DOMContentLoaded', () => {
-  initSwiperSlider();
+  initTestimonialSlider();
 });

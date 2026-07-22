@@ -4,6 +4,8 @@ function initPhotoSlider() {
   photoSliderGroups.forEach((swiperGroup) => {
     const swiperSliderWrap = swiperGroup.querySelector("[data-swiper-wrap='photo-slider']");
     if(!swiperSliderWrap) return;
+    if (swiperGroup.hasAttribute('data-swiper-initialized')) return;
+    swiperGroup.setAttribute('data-swiper-initialized', '');
 
     // const prevButton = swiperGroup.querySelector("[data-swiper-prev]");
     // const nextButton = swiperGroup.querySelector("[data-swiper-next]");
