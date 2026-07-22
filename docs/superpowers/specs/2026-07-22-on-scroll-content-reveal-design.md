@@ -78,6 +78,22 @@ Replace the current `scripts/on-scroll/index.js` (IntersectionObserver + CustomE
 | Trigger start | `top 80%` |
 | Replay | play once, stay visible |
 
+## Customization Attributes
+
+Every value above is overridable per element via a `data-on-scroll-<param>` attribute placed on the same element that carries `data-on-scroll`. A missing or unparseable attribute falls back to the default. Numeric attributes are parsed with `parseFloat` (fallback on `NaN`); string attributes are used verbatim (fallback when absent or empty).
+
+| Attribute | Type | Default | Notes |
+|---|---|---|---|
+| `data-on-scroll-duration` | number (s) | `0.7` | |
+| `data-on-scroll-delay` | number (s) | `0` | |
+| `data-on-scroll-ease` | string | `power1.out` | any GSAP ease string |
+| `data-on-scroll-stagger` | number (s) | `0.2` | stagger-reveal mode only |
+| `data-on-scroll-y` | string | `4rem` | move distance, any CSS unit |
+| `data-on-scroll-start` | string | `top 80%` | ScrollTrigger `start` |
+| `data-on-scroll-toggle-actions` | string | `play none none none` | ScrollTrigger `toggleActions` |
+
+All attributes are read from the element carrying `data-on-scroll` (the trigger element in both modes).
+
 ## Error Handling
 
 Guard-clause style only, matching the codebase: skip elements whose init guard is already set; skip stagger-reveal containers with no direct children. No further handling.
